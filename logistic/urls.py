@@ -8,8 +8,10 @@ router = DefaultRouter()
 router.register('products', ProductViewSet)
 router.register('stocks', StockViewSet)
 
+
 def test_view(request):
     return JsonResponse({'ok': True})
+
 
 urlpatterns = router.urls + [
     path('test/', test_view),
