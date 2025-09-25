@@ -2,11 +2,11 @@ name: Testing and deployment
 
 on:
   push:
-    branches: [master]
+    branches: [main]
 
 jobs:
   testing:
-    runs-on: ubuntu 24.04
+    runs-on: ubuntu-24.04
     env:
       SECRET_KEY: ${{ secrets.SECRET }}
       DEBUG: ${{ secrets.DEBUG_MODE}}
@@ -25,7 +25,7 @@ jobs:
           POSTGRES_USER: ${{ env.DB_USER }}
           POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
         ports:
-          - 5432
+          - 5432:5432
         options:
           --health-cmd pg_isready
           --health-interval 5s
