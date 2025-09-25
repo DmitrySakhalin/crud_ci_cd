@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu 24.04
     env:
       SECRET_KEY: ${{ secrets.SECRET }}
-      DEBUG: ${{ secret.DEBUG_MODE}}
+      DEBUG: ${{ secrets.DEBUG_MODE}}
       ALLOWED: ${{ secrets.ALLOWED_HOSTS }}
       DB_ENGINE: ${{ secrets.DB_ENGINE }}
       DB_NAME: ${{ secrets.DB_NAME }}
