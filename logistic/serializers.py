@@ -3,7 +3,6 @@ from rest_framework import serializers
 from logistic.models import Product, StockProduct, Stock
 
 
-
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
@@ -11,7 +10,9 @@ class ProductSerializer(serializers.ModelSerializer):
 
 
 class ProductPositionSerializer(serializers.ModelSerializer):
-    product = serializers.PrimaryKeyRelatedField(queryset=Product.objects.all())
+    product = serializers.PrimaryKeyRelatedField(
+        queryset=Product.objects.all()
+    )
 
     class Meta:
         model = StockProduct
@@ -32,14 +33,11 @@ class StockSerializer(serializers.ModelSerializer):
             StockProduct.objects.create(stock=stock, **pos_data)
         return stock
 
-
     def update(self, instance, validated_data):
         positions = validated_data.pop('positions')
         instance.address = validated_data.get('address', instance.address)
         instance.save()
-
-
         instance.positions.all().delete()
         for pos_data in positions:
             StockProduct.objects.create(stock=instance, **pos_data)
-
+        return instance

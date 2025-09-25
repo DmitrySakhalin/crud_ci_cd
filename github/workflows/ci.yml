@@ -1,0 +1,60 @@
+name: Testing and deployment
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  testing:
+    runs-on: ubuntu 24.04
+    env:
+      SECRET_KEY: ${{ secret.SECRET }}
+      DEBUG: ${{ secret.DEBUG_MODE}}
+      ALLOWED: ${{ secret.ALLOWED_HOSTS }}
+      DB_ENGINE: ${{ secret.DB_ENGINE }}
+      DB_NAME: ${{ secret.DB_NAME }}
+      DB_USER: ${{ secret.DB_USER }}
+      DB_PASSWORD: ${{ secret.DB_PASSWORD }}
+      DB_HOST: ${{ secret.DB_HOST }}
+      DB_PORT: ${{ secret.DB_PORT }}
+    service:
+      postgresql_main:
+        image: postgres-12
+        env:
+          POSTGRES_DB: ${{ env.DB_NAME }}
+          POSTGRES_USER: ${{ env.DB_USER }}
+          POSTGRES_PASSWORD: ${{ env.DB_PASSWORD }}
+        ports:
+          - 5432:5432
+        options:
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Проверяем наличие изменений
+        uses: actions/checkout@4
+
+      - name: Установка Python
+        uses: actions/setup-python@4
+        with:
+          - python-version: 3.12
+
+      - name: Установить зависимости
+        run: pip install -r requirements.txt
+
+      - name: Линтинг
+        run: flake8 logistic/ -- exclude=logistic/migrations/
+
+      - name: Тестирование
+        run: python manage.py test
+        env:
+          SECRET_KEY: ${{ env.SECRET }}
+          DEBUG: ${{ env.DEBUG }}
+          ALLOWED_HOSTS: ${{ env.ALLOWED_HOSTS }}
+          DB_ENGINE: ${{ env.DB_ENGINE }}
+          DB_NAME: ${{ env.DB.NAME }}
+          DB_USER: ${{ env.DB_USER }}
+          DB_PASSWORD: ${{ env.DB_PASSWORD }}
+          DB_HOST: ${{ env.DB_HOST }}
+          DB_PORT: ${{ env.DB_PORT }}
