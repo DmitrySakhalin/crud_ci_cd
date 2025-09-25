@@ -10,4 +10,4 @@ class MyTest(TestCase):
         url = "/api/v1/test"
         client = APIClient()
         response = client.get(url)
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 200)
