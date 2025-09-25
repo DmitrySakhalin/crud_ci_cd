@@ -68,6 +68,7 @@ jobs:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
           password: ${{ secrets.PASSWORD }}
+          key: ${{ secrets.PRIVATE_KEY }}
           script: |
             cd /home/user/crud_ci_cd
             git pull origin main
